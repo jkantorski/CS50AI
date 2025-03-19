@@ -56,7 +56,7 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
 
     # Load data from files into memory
     print("Loading data...")
@@ -92,12 +92,35 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-    zb = set()
-    node = Node(source, parent=None, action=None)
+    visited = set()
+    start = Node(source, parent=None, action=None)
     frontier = QueueFrontier()
+    frontier.add(start)
+    while True:
 
+        if frontier.empty():
+            raise Exception("No solution")
 
-    
+        node = frontier.remove()
+
+        #sprawdzam czy cel został osiągniety
+        if node.state == target:
+            person_id = []
+            movie_id = []
+            while node.parent is not None:
+                person_id.append(node.action)
+                movie_id.append(node.state)
+                node = node.parent
+            solution = (person_id, movie_id)
+            return solution
+        #jezeli nie, dodaje do zbioru
+        visited.add(node.state)
+
+        neighbors = neighbors_for_person(node.state)
+        for action, state in neighbors:
+            if not frontier.contains_state(state) and state not in visited:
+                child = Node(state=state, parent=node, action=action)
+                frontier.add(child)
 
 
 def person_id_for_name(name):
