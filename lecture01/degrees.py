@@ -56,7 +56,7 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
 
     # Load data from files into memory
     print("Loading data...")
@@ -99,7 +99,7 @@ def shortest_path(source, target):
     while True:
 
         if frontier.empty():
-            raise Exception("No solution")
+            return None
 
         node = frontier.remove()
 
@@ -108,10 +108,14 @@ def shortest_path(source, target):
             person_id = []
             movie_id = []
             while node.parent is not None:
-                person_id.append(node.action)
-                movie_id.append(node.state)
+                person_id.append(node.state)
+                movie_id.append(node.action)
                 node = node.parent
-            solution = (person_id, movie_id)
+            solution = []
+            person_id.reverse()
+            movie_id.reverse()
+            for i in range(len(person_id)):
+                solution.append((movie_id[i], person_id[i]))
             return solution
         #jezeli nie, dodaje do zbioru
         visited.add(node.state)
